@@ -1,1 +1,80 @@
+CREATE DATABASE library_lab;
+USE library_lab;
 
+CREATE TABLE MEMBER(
+    MemberID INT PRIMARY KEY,
+    FullName VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    Age INT,
+    Gender ENUM('Male','Female','Other'),
+    CONSTRAINT CHK_MEMBER_AGE CHECK(Age >= 12)
+);
+
+CREATE TABLE BOOK(
+    BookID INT PRIMARY KEY,
+    Title VARCHAR(200) NOT NULL,
+    ISBN VARCHAR(20) NOT NULL UNIQUE,
+    Price DECIMAL(6,2),
+    Status ENUM('AVAILABLE','BORROWED') DEFAULT 'AVAILABLE',
+    CONSTRAINT CHK_BOOK_PRICE CHECK(Price >= 0)
+);
+
+CREATE TABLE LOAN(
+    LoanID INT PRIMARY KEY,
+    MemberID INT,
+    BookID INT,
+    CONSTRAINT FK_MEMBER
+        FOREIGN KEY(MemberID) REFERENCES MEMBER(MemberID),
+    CONSTRAINT FK_BOOK
+        FOREIGN KEY(BookID) REFERENCES BOOK(BookID)
+);
+
+INSERT INTO MEMBER(MemberID,FullName,Email,Age,Gender) VALUES
+(1,'Sabit Rahman','sabit1@gmail.com',21,'Male'),
+(2,'Ayesha Khan','ayesha@gmail.com',22,'Female'),
+(3,'Tanvir Hasan','tanvir@gmail.com',23,'Male'),
+(4,'Nusrat Jahan','nusrat@gmail.com',20,'Female'),
+(5,'Rahim Ahmed','rahim@gmail.com',25,'Male');
+
+INSERT INTO BOOK(BookID,Title,ISBN,Price,Status) VALUES
+(101,'Database System','ISBN001',450,'AVAILABLE'),
+(102,'Algorithms','ISBN002',500,'AVAILABLE'),
+(103,'Operating System','ISBN003',550,'AVAILABLE'),
+(104,'Computer Network','ISBN004',400,'AVAILABLE'),
+(105,'Data Structure','ISBN005',480,'AVAILABLE');
+
+INSERT INTO LOAN VALUES
+(1,1,101),
+(2,2,102),
+(3,3,103),
+(4,1,104),
+(5,4,105),
+(6,5,101);
+
+INSERT INTO MEMBER VALUES
+(6,'Karim','sabit1@gmail.com',22,'Male');
+
+INSERT INTO LOAN VALUES
+(7,10,102);
+
+
+INSERT INTO BOOK VALUES
+(106,'AI Basics','ISBN006',-200,'AVAILABLE');
+
+ALTER TABLE MEMBER
+ADD Phone VARCHAR(15) NOT NULL DEFAULT 'N/A';
+
+ALTER TABLE BOOK
+MODIFY Price DECIMAL(8,2);
+
+ALTER TABLE BOOK
+CHANGE Status Availability ENUM('AVAILABLE','BORROWED') DEFAULT 'AVAILABLE';
+
+ALTER TABLE MEMBER
+DROP COLUMN Gender;
+
+ALTER TABLE MEMBER
+ADD CONSTRAINT CHK_PHONE_NOT_EMPTY
+CHECK(Phone <> '');
+
+RENAME TABLE LOAN TO BORROW;
